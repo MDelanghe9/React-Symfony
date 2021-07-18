@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\Collection;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
@@ -29,6 +31,11 @@ class Category
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="le nom de la categorie ne peut etre vide")
+     * @Assert\Length(min=5, max=50,
+     *  minMessage="le nom de la categorie doit faire entre 2 et 50 characters",
+     *  maxMessage="le nom de la categorie doit faire entre 2 et 50 characters",
+     *  )
      */
     private $name;
 
