@@ -6,8 +6,11 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProductRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -15,7 +18,9 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *      attributes={
  *          "pagination_enabled"=true,
  *          "pagination_items_per_page"=5
- * })
+ *      },
+ *      denormalizationContext={"disable_type_enforcement"=true}
+ * )
  * @ApiFilter(SearchFilter::class, properties={"brand":"partial", "price", "name":"partial", "popularity"})
  * @ApiFilter(OrderFilter::class)
  * 
@@ -31,11 +36,18 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="le nom du produit ne peut etre vide")
+     * @Assert\Length(min=5, max=250,
+     *      minMessage="le nom du produit doit faire entre 5 et 250 characters",
+     *      maxMessage="le nom du produit doit faire entre 5 et 250 characters",
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message="le prix du produit ne peut etre vide")
+     * @Assert\Type(type="numeric", message="le prix du produit doit etre un nombre entier" )
      */
     private $price;
 
@@ -46,11 +58,18 @@ class Product
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message="le nomnbre de stock du produit ne peut etre vide")
+     * @Assert\Type(type="integer", message="le stock du produit doit etre un nombre entier" )
+     * 
      */
     private $stock;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(min=2, max=75,
+     *      minMessage="le nom de la marque doit faire entre 2 et 75 characters",
+     *      maxMessage="le nom de la marque doit faire entre 2 et 75 characters",
+     * )
      */
     private $brand;
 
@@ -62,6 +81,8 @@ class Product
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Type(type="integer", message="la popularite du produit doit etre un nombre entier" )
+     * 
      */
     private $popularity;
 
@@ -87,7 +108,7 @@ class Product
         return $this->price;
     }
 
-    public function setPrice(int $price): self
+    public function setPrice($price): self
     {
         $this->price = $price;
 
@@ -111,7 +132,7 @@ class Product
         return $this->stock;
     }
 
-    public function setStock(int $stock): self
+    public function setStock($stock): self
     {
         $this->stock = $stock;
 
@@ -147,7 +168,7 @@ class Product
         return $this->popularity;
     }
 
-    public function setPopularity(?int $popularity): self
+    public function setPopularity( $popularity): self
     {
         $this->popularity = $popularity;
 
