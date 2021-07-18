@@ -25,6 +25,7 @@ class AppFixtures extends Fixture
                 $pro->setName($faker->company);
                 $pro->setPrice($faker->randomFloat(2, 250, 5000));
                 $pro->setDetail('str');
+                $pro->setPopularity(rand(0, 99));
                 $pro->setBrand($faker->randomElement(['Yama', 'Bll', 'Sonyy', 'Blid', 'Rick']));
                 $pro->setStock(rand(0, 25));
                 $pro->setCategory($cat);
